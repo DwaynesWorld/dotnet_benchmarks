@@ -7,10 +7,19 @@ using System.Web.Http;
 
 namespace netframework.Controllers
 {
+    [Route("api/[controller]")]
     public class ValuesController : ApiController
     {
-        // GET api/values
-        public string Get()
+        [HttpGet]
+        [Route("1")]
+        public ActionResult<IEnumerable<string>> RequestCollection()
+        {
+            return new string[] { "value1", "value2" };
+        }
+
+        [HttpGet]
+        [Route("2")]
+        public ActionResult<string> RequestRawString()
         {
             return "value";
         }
