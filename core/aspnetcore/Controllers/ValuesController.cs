@@ -12,14 +12,14 @@ namespace aspnetcore.Controllers
     {
         [HttpGet]
         [Route("1")]
-        public ActionResult<IEnumerable<string>> RequestCollection()
+        public IEnumerable<string> RequestCollection()
         {
             return new string[] { "value1", "value2" };
         }
 
         [HttpGet]
         [Route("2")]
-        public ActionResult<string> RequestRawString()
+        public string RequestRawString()
         {
             return "value";
         }

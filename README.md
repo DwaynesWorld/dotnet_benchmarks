@@ -1,9 +1,12 @@
 ﻿# dotnet_benchmarks
 
-## unix
-
 dotnet run -c Release
 
-./bombardier -c 200 -n 1000000 http://localhost:5000/api/values/
+## unix
+
+./bombardier -c 200 -n 600000 http://localhost:5000/api/values/
 
 ## pc
+
+.\bombardier.exe -c 200 -n 600000 http://localhost:5000/api/values/
+.\bombardier.exe -c 200 -n 600000 http://localhost:56862/api/values/

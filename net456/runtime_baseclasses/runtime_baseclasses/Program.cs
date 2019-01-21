@@ -24,8 +24,8 @@ namespace runtime_baseclasses
                 Console.WriteLine("(6) Linq - OrderBy, Skip, First");
                 Console.WriteLine("(7) Linq - Select, ToList");
                 Console.WriteLine("(8) String Manipulation - DateTime ToString");
-                Console.WriteLine("(9) Serialization - Binary Serialization ");
-                Console.WriteLine("(10) Serialization - Binary Deserialization");
+                Console.WriteLine("(9) Serialization - Binary Deserialization ");
+                Console.WriteLine("(10) Serialization - Binary ");
                 Console.WriteLine("");
                 Console.WriteLine("");
 
@@ -75,7 +75,7 @@ namespace runtime_baseclasses
                     DateTime_ToString();
                     break;
                 case 9:
-                    Serialization();
+                    Deserialization();
                     break;
                 case 10:
                     Deserialization();
@@ -220,29 +220,6 @@ namespace runtime_baseclasses
         }
 
         // ~12x
-        static void Serialization()
-        {
-            var books = new List<Book>();
-            for (int i = 0; i < 1_000_000; i++)
-            {
-                string id = i.ToString();
-                books.Add(new Book { Name = id, Id = id });
-            }
-
-            var formatter = new BinaryFormatter();
-            var mem = new MemoryStream();
-
-            for (int it = 0; it < COUNT; it++)
-            {
-                var sw = Stopwatch.StartNew();
-                formatter.Serialize(mem, books);
-                sw.Stop();
-
-                Console.WriteLine(sw.Elapsed.TotalSeconds);
-            }
-        }
-
-        // ~12x
         static void Deserialization()
         {
             var books = new List<Book>();
@@ -256,16 +233,13 @@ namespace runtime_baseclasses
             var mem = new MemoryStream();
             formatter.Serialize(mem, books);
 
-            for (int it = 0; it < COUNT; it++)
-            {
-                mem.Position = 0;
+            mem.Position = 0;
 
-                var sw = Stopwatch.StartNew();
-                formatter.Deserialize(mem);
-                sw.Stop();
+            var sw = Stopwatch.StartNew();
+            formatter.Deserialize(mem);
+            sw.Stop();
 
-                Console.WriteLine(sw.Elapsed.TotalSeconds);
-            }
+            Console.WriteLine(sw.Elapsed.TotalSeconds);
         }
 
         [Serializable]

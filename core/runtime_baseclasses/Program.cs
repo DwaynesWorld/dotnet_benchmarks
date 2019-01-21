@@ -16,16 +16,16 @@ namespace runtime_baseclasses
             while (true)
             {
                 Console.WriteLine("Choose a performance Test:");
-                Console.WriteLine("(1) Collections - List");
-                Console.WriteLine("(2) Collections - IEnumerable");
-                Console.WriteLine("(3) Collections - Queue");
-                Console.WriteLine("(4) Collections - SortedSet");
-                Console.WriteLine("(5) Collections - SortedSets Min & Max");
-                Console.WriteLine("(6) Linq - OrderBy, Skip, First");
-                Console.WriteLine("(7) Linq - Select, ToList");
-                Console.WriteLine("(8) String Manipulation - DateTime ToString");
-                Console.WriteLine("(9) Serialization - Binary Serialization ");
-                Console.WriteLine("(10) Serialization - Binary Deserialization");
+                Console.WriteLine("\t (1) Collections - List");
+                Console.WriteLine("\t (2) Collections - IEnumerable");
+                Console.WriteLine("\t (3) Collections - Queue");
+                Console.WriteLine("\t (4) Collections - SortedSet");
+                Console.WriteLine("\t (5) Collections - SortedSets Min & Max");
+                Console.WriteLine("\t (6) Linq - OrderBy, Skip, First");
+                Console.WriteLine("\t (7) Linq - Select, ToList");
+                Console.WriteLine("\t (8) String Manipulation - DateTime ToString");
+                Console.WriteLine("\t (9) Serialization - Binary Serialization ");
+                Console.WriteLine("\t (10) Serialization - Binary Deserialization");
                 Console.WriteLine("");
                 Console.WriteLine("");
 
@@ -220,29 +220,6 @@ namespace runtime_baseclasses
         }
 
         // ~12x
-        static void Serialization()
-        {
-            var books = new List<Book>();
-            for (int i = 0; i < 1_000_000; i++)
-            {
-                string id = i.ToString();
-                books.Add(new Book { Name = id, Id = id });
-            }
-
-            var formatter = new BinaryFormatter();
-            var mem = new MemoryStream();
-
-            for (int it = 0; it < COUNT; it++)
-            {
-                var sw = Stopwatch.StartNew();
-                formatter.Serialize(mem, books);
-                sw.Stop();
-
-                Console.WriteLine(sw.Elapsed.TotalSeconds);
-            }
-        }
-
-        // ~12x
         static void Deserialization()
         {
             var books = new List<Book>();
@@ -256,16 +233,14 @@ namespace runtime_baseclasses
             var mem = new MemoryStream();
             formatter.Serialize(mem, books);
 
-            for (int it = 0; it < COUNT; it++)
-            {
-                mem.Position = 0;
+            mem.Position = 0;
 
-                var sw = Stopwatch.StartNew();
-                formatter.Deserialize(mem);
-                sw.Stop();
+            var sw = Stopwatch.StartNew();
+            formatter.Deserialize(mem);
+            sw.Stop();
 
-                Console.WriteLine(sw.Elapsed.TotalSeconds);
-            }
+            Console.WriteLine(sw.Elapsed.TotalSeconds);
+
         }
 
         [Serializable]
