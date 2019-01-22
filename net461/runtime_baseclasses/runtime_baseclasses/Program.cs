@@ -34,7 +34,6 @@ namespace runtime_baseclasses
 
         static void Lists()
         {
-
             Console.WriteLine("Collections - List");
             Console.WriteLine("Performance: 1.4x, Both highly optimized");
 
@@ -67,16 +66,16 @@ namespace runtime_baseclasses
 
             var times = new List<Double>();
 
+            IEnumerable<int> zeroToTen = Enumerable.Range(0, 10);
+            IEnumerable<int> result = zeroToTen;
+
+            for (int i = 0; i < 10_000; i++)
+            {
+                result = result.Concat(zeroToTen);
+            }
+
             for (int it = 0; it < COUNT; it++)
             {
-                IEnumerable<int> zeroToTen = Enumerable.Range(0, 10);
-                IEnumerable<int> result = zeroToTen;
-
-                for (int i = 0; i < 10_000; i++)
-                {
-                    result = result.Concat(zeroToTen);
-                }
-
                 var sw = Stopwatch.StartNew();
 
                 foreach (int i in result) { }
@@ -122,20 +121,13 @@ namespace runtime_baseclasses
             Console.WriteLine("Collections - SortedSet");
             Console.WriteLine("Performance: 592x, Bad original algorithm for handling duplicates ( O(N^2) )");
 
-            var times = new List<Double>();
+            var sw = Stopwatch.StartNew();
 
-            for (int it = 0; it < COUNT; it++)
-            {
-                var sw = Stopwatch.StartNew();
+            var ss = new SortedSet<int>(Enumerable.Repeat(42, 1_000_000));
 
-                var ss = new SortedSet<int>(Enumerable.Repeat(42, 4_000_000));
+            sw.Stop();
 
-                sw.Stop();
-                times.Add(sw.Elapsed.TotalMilliseconds);
-                Console.WriteLine(sw.Elapsed.TotalMilliseconds);
-            }
-
-            Console.WriteLine($"Average: {times.Average()}");
+            Console.WriteLine(sw.Elapsed.TotalMilliseconds);
             Console.WriteLine("");
         }
 
@@ -146,13 +138,14 @@ namespace runtime_baseclasses
 
             var times = new List<Double>();
 
+            var s = new SortedSet<int>();
+            for (int n = 0; n < 100_000; n++)
+            {
+                s.Add(n);
+            }
+
             for (int it = 0; it < COUNT; it++)
             {
-                var s = new SortedSet<int>();
-                for (int n = 0; n < 100_000; n++)
-                {
-                    s.Add(n);
-                }
 
                 var sw = Stopwatch.StartNew();
 
@@ -240,7 +233,7 @@ namespace runtime_baseclasses
                 sw.Stop();
                 times.Add(sw.Elapsed.TotalMilliseconds);
                 gcs.Add(GC.CollectionCount(0) - gen0);
-                Console.WriteLine($"Elapsed={sw.Elapsed.TotalMilliseconds} Gen0={GC.CollectionCount(0) - gen0}");
+                Console.WriteLine($"Elapsed: {sw.Elapsed.TotalMilliseconds} GC Count: {GC.CollectionCount(0) - gen0}");
             }
 
             Console.WriteLine($"Average Elapsed: {times.Average()}, Average GC Count: {gcs.Average()}");

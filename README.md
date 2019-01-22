@@ -8,6 +8,6 @@ dotnet run -c Release
 
 ## pc
 
-.\bombardier.exe -c 200 -n 600000 http://localhost:5000/api/values/
+.\bombardier.exe -c 200 -n 600000 http://localhost:5000/api/values/1
 
-.\bombardier.exe -c 200 -n 600000 http://localhost:56862/api/values/
+.\bombardier.exe -c 200 -n 600000 http://localhost:56862/api/values/1
