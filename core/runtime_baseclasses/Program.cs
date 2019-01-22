@@ -13,97 +13,60 @@ namespace runtime_baseclasses
 
         static void Main(string[] args)
         {
-            while (true)
-            {
-                Console.WriteLine("Choose a performance Test:");
-                Console.WriteLine("\t (1) Collections - List");
-                Console.WriteLine("\t (2) Collections - IEnumerable");
-                Console.WriteLine("\t (3) Collections - Queue");
-                Console.WriteLine("\t (4) Collections - SortedSet");
-                Console.WriteLine("\t (5) Collections - SortedSets Min & Max");
-                Console.WriteLine("\t (6) Linq - OrderBy, Skip, First");
-                Console.WriteLine("\t (7) Linq - Select, ToList");
-                Console.WriteLine("\t (8) String Manipulation - DateTime ToString");
-                Console.WriteLine("\t (9) Serialization - Binary Serialization ");
-                Console.WriteLine("\t (10) Serialization - Binary Deserialization");
-                Console.WriteLine("");
-                Console.WriteLine("");
-
-                string input = Console.ReadLine();
-                int selection = -1;
-                bool valid = int.TryParse(input, out selection);
-
-                if (!valid)
-                {
-                    Console.WriteLine("Please enter a valid number.");
-                }
-                else
-                {
-                    RunTest(selection);
-                }
-
-                Console.WriteLine("");
-            }
+            Console.WriteLine(".Net Core/.Net Framework Performance Test");
+            Console.WriteLine("");
+            RunTest();
         }
 
-        static void RunTest(int testNumber)
+        static void RunTest()
         {
-            switch (testNumber)
-            {
-                case 1:
-                    Lists();
-                    break;
-                case 2:
-                    IEnumerables();
-                    break;
-                case 3:
-                    Queues();
-                    break;
-                case 4:
-                    SortedSets();
-                    break;
-                case 5:
-                    SortedSetsMinMax();
-                    break;
-                case 6:
-                    Linq_OrderBySkipFirst();
-                    break;
-                case 7:
-                    Linq_SelectToList();
-                    break;
-                case 8:
-                    DateTime_ToString();
-                    break;
-                case 9:
-                    Serialization();
-                    break;
-                case 10:
-                    Deserialization();
-                    break;
-                default:
-                    break;
-            }
+            Lists();
+            IEnumerables();
+            Queues();
+            SortedSets();
+            SortedSetsMinMax();
+            Linq_OrderBySkipFirst();
+            Linq_SelectToList();
+            DateTime_ToString();
+            Deserialization();
         }
 
-        // Both highly optimized
+
         static void Lists()
         {
+
+            Console.WriteLine("Collections - List");
+            Console.WriteLine("Performance: 1.4x, Both highly optimized");
+
+            var times = new List<Double>();
+
             for (int it = 0; it < COUNT; it++)
             {
                 var l = new List<int>();
                 var sw = Stopwatch.StartNew();
+
                 for (int i = 0; i < 100_000_000; i++)
                 {
                     l.Add(i);
                     l.RemoveAt(0);
                 }
-                Console.WriteLine(sw.Elapsed);
+
+                sw.Stop();
+                times.Add(sw.Elapsed.TotalMilliseconds);
+                Console.WriteLine(sw.Elapsed.TotalMilliseconds);
             }
+
+            Console.WriteLine($"Average: {times.Average()}");
+            Console.WriteLine("");
         }
 
-        // ~30x improve
         static void IEnumerables()
         {
+            Console.WriteLine("Collections - IEnumerable");
+            Console.WriteLine("Performance: 29.4x");
+
+            var times = new List<Double>();
+
             for (int it = 0; it < COUNT; it++)
             {
                 IEnumerable<int> zeroToTen = Enumerable.Range(0, 10);
@@ -115,14 +78,25 @@ namespace runtime_baseclasses
                 }
 
                 var sw = Stopwatch.StartNew();
+
                 foreach (int i in result) { }
-                Console.WriteLine(sw.Elapsed);
+
+                sw.Stop();
+                times.Add(sw.Elapsed.TotalMilliseconds);
+                Console.WriteLine(sw.Elapsed.TotalMilliseconds);
             }
+
+            Console.WriteLine($"Average: {times.Average()}");
+            Console.WriteLine("");
         }
 
-        // ~2x increase in throughput
         static void Queues()
         {
+            Console.WriteLine("Collections - Queue");
+            Console.WriteLine("Performance: 1.7x");
+
+            var times = new List<Double>();
+
             for (int it = 0; it < COUNT; it++)
             {
                 var q = new Queue<int>();
@@ -134,25 +108,44 @@ namespace runtime_baseclasses
                     q.Dequeue();
                 }
 
-                Console.WriteLine(sw.Elapsed);
+                sw.Stop();
+                times.Add(sw.Elapsed.TotalMilliseconds);
+                Console.WriteLine(sw.Elapsed.TotalMilliseconds);
             }
+
+            Console.WriteLine($"Average: {times.Average()}");
+            Console.WriteLine("");
         }
 
-        // ~600x when handling dups
-        // original O(N^2) algorithm for handling duplicates
         static void SortedSets()
         {
+            Console.WriteLine("Collections - SortedSet");
+            Console.WriteLine("Performance: 592x, Bad original algorithm for handling duplicates ( O(N^2) )");
+
+            var times = new List<Double>();
+
             for (int it = 0; it < COUNT; it++)
             {
                 var sw = Stopwatch.StartNew();
+
                 var ss = new SortedSet<int>(Enumerable.Repeat(42, 4_000_000));
-                Console.WriteLine(sw.Elapsed);
+
+                sw.Stop();
+                times.Add(sw.Elapsed.TotalMilliseconds);
+                Console.WriteLine(sw.Elapsed.TotalMilliseconds);
             }
+
+            Console.WriteLine($"Average: {times.Average()}");
+            Console.WriteLine("");
         }
 
-        // ~15x
         static void SortedSetsMinMax()
         {
+            Console.WriteLine("Collections - SortedSets Min & Max");
+            Console.WriteLine("Performance: 13.2x");
+
+            var times = new List<Double>();
+
             for (int it = 0; it < COUNT; it++)
             {
                 var s = new SortedSet<int>();
@@ -162,52 +155,81 @@ namespace runtime_baseclasses
                 }
 
                 var sw = Stopwatch.StartNew();
+
                 for (int i = 0; i < 10_000_000; i++)
                 {
                     var result = s.Min;
                 }
 
-                Console.WriteLine(sw.Elapsed);
+                sw.Stop();
+                times.Add(sw.Elapsed.TotalMilliseconds);
+                Console.WriteLine(sw.Elapsed.TotalMilliseconds);
             }
+
+            Console.WriteLine($"Average: {times.Average()}");
+            Console.WriteLine("");
         }
 
-
-        // ~8x
         static void Linq_OrderBySkipFirst()
         {
+            Console.WriteLine("Linq - OrderBy, Skip, First");
+            Console.WriteLine("Performance: 7.8x");
+
+            var times = new List<Double>();
             IEnumerable<int> tenMillionToZero = Enumerable.Range(0, 10_000_000).Reverse();
 
             for (int it = 0; it < COUNT; it++)
             {
                 var sw = Stopwatch.StartNew();
+
                 int fifth = tenMillionToZero.OrderBy(i => i).Skip(4).First();
-                Console.WriteLine(sw.Elapsed);
+
+                sw.Stop();
+                times.Add(sw.Elapsed.TotalMilliseconds);
+                Console.WriteLine(sw.Elapsed.TotalMilliseconds);
             }
+
+            Console.WriteLine($"Average: {times.Average()}");
+            Console.WriteLine("");
         }
 
-        // ~4x
         static void Linq_SelectToList()
         {
+            Console.WriteLine("Linq - Select, ToList");
+            Console.WriteLine("Performance: 4x");
+
+            var times = new List<Double>();
             IEnumerable<int> zeroToTenMillion = Enumerable.Range(0, 10_000_000).ToArray();
 
             for (int it = 0; it < COUNT; it++)
             {
                 var sw = Stopwatch.StartNew();
+
                 zeroToTenMillion.Select(i => i).ToList();
-                Console.WriteLine(sw.Elapsed);
+
+                sw.Stop();
+                times.Add(sw.Elapsed.TotalMilliseconds);
+                Console.WriteLine(sw.Elapsed.TotalMilliseconds);
             }
+
+            Console.WriteLine($"Average: {times.Average()}");
+            Console.WriteLine("");
         }
 
-        // ~3x , ~10x less memory
         static void DateTime_ToString()
         {
+            Console.WriteLine("String Manipulation - DateTime ToString");
+            Console.WriteLine("Performance: 3.2x, Memory: 10x less memory garbage collections");
+
+            var times = new List<Double>();
+            var gcs = new List<int>();
             var dt = DateTime.Now;
 
             for (int it = 0; it < COUNT; it++)
             {
-                var sw = new Stopwatch();
+
                 int gen0 = GC.CollectionCount(0);
-                sw.Start();
+                var sw = Stopwatch.StartNew();
 
                 for (int i = 0; i < 2_000_000; i++)
                 {
@@ -215,13 +237,21 @@ namespace runtime_baseclasses
                     dt.ToString("r");
                 }
 
-                Console.WriteLine($"Elapsed={sw.Elapsed} Gen0={GC.CollectionCount(0) - gen0}");
+                sw.Stop();
+                times.Add(sw.Elapsed.TotalMilliseconds);
+                gcs.Add(GC.CollectionCount(0) - gen0);
+                Console.WriteLine($"Elapsed={sw.Elapsed.TotalMilliseconds} Gen0={GC.CollectionCount(0) - gen0}");
             }
+
+            Console.WriteLine($"Average Elapsed: {times.Average()}, Average GC Count: {gcs.Average()}");
+            Console.WriteLine("");
         }
 
-        // ~12x
         static void Deserialization()
         {
+            Console.WriteLine("Serialization - Binary Deserialization");
+            Console.WriteLine("Performance: 12x");
+
             var books = new List<Book>();
             for (int i = 0; i < 1_000_000; i++)
             {
@@ -232,15 +262,15 @@ namespace runtime_baseclasses
             var formatter = new BinaryFormatter();
             var mem = new MemoryStream();
             formatter.Serialize(mem, books);
-
             mem.Position = 0;
 
             var sw = Stopwatch.StartNew();
+
             formatter.Deserialize(mem);
+
             sw.Stop();
-
             Console.WriteLine(sw.Elapsed.TotalSeconds);
-
+            Console.WriteLine("");
         }
 
         [Serializable]
